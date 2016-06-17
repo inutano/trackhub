@@ -4,11 +4,12 @@ require 'json'
 
 module TrackHub
   class ChIPAtlas
-    class Experiments
+    class Track
       class << self
-        def read_table(filepath)
+        def read_table(filepath, genome)
           tracks = open(filepath).readlines.map do |line|
             track = self.new(line)
+            next if track.genome_assembly != genome
             [
               track.bigwig,
               track.bigbed("05"),
@@ -19,11 +20,11 @@ module TrackHub
           tracks.flatten
         end
 
-        def export_json
-          JSON.dump(read_table)
+        def export_json(filepath, genome)
+          JSON.dump(read_table(filepath, genome))
         end
 
-        def export_trackfile(filepath)
+        def export(filepath, genome)
           tracks = read_table(filepath)
           track_lines = tracks.map do |track|
             track_line = track.map do |key, value|
@@ -48,6 +49,7 @@ module TrackHub
         @exp_id = @metadata[:metadata][:experiment_id]
         @genome = @metadata[:metadata][:genome_assembly]
       end
+      attr_reader :genome
 
       def bigwig
         {

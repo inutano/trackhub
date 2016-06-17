@@ -1,5 +1,5 @@
 require 'trackhub/chipatlas'
-require 'trackhub/chipatlas/experiments'
+require 'trackhub/chipatlas/track'
 
 module TrackHub
 	# something goes here

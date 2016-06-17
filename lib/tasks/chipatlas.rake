@@ -6,7 +6,7 @@ namespace :chipatlas do
 
   task :create do
     ["hg19", "mm9", "ce10", "dm3", "sacCer3"].each do |g|
-      open(File.join(metadata_dir, "trackDb_#{g}.txt")) do |f|
+      open(File.join(metadata_dir, "trackDb_#{g}.txt"), "w") do |f|
         f.puts(TrackHub::ChIPAtlas::Track.export(explist, g))
       end
     end

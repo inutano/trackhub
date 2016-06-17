@@ -9,7 +9,7 @@ module TrackHub
         def read_table(filepath, genome)
           tracks = open(filepath).readlines.map do |line|
             track = self.new(line)
-            next if track.genome_assembly != genome
+            next if track.genome != genome
             [
               track.bigwig,
               track.bigbed("05"),
@@ -17,7 +17,7 @@ module TrackHub
               track.bigbed("20"),
             ]
           end
-          tracks.flatten
+          tracks.compact.flatten
         end
 
         def export_json(filepath, genome)
@@ -25,7 +25,7 @@ module TrackHub
         end
 
         def export(filepath, genome)
-          tracks = read_table(filepath)
+          tracks = read_table(filepath, genome)
           track_lines = tracks.map do |track|
             track_line = track.map do |key, value|
               if value.class == Hash

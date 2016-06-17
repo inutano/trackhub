@@ -21,6 +21,24 @@ module TrackHub
         JSON.dump(read_table)
       end
 
+      def export_trackfile
+        tracks = read_table
+        track_lines = tracks.map do |track|
+          track_line = track.map do |key, value|
+            if value.class == Hash
+              val = value.map do |k,v|
+                k.to_s.upcase + "=" + v.gsub(/\s/,"_") if v
+              end
+              key.to_s + "\s" + val.join("\s")
+            else
+              key.to_s + "\s" + value
+            end
+          end
+          track_line.join("\n")
+        end
+        track_lines.join("\n\n")
+      end
+
       def read_table
         tracks = open(@filepath).readlines.map do |line|
           tm = track_metadata(line)
@@ -36,20 +54,20 @@ module TrackHub
 
       def track_bigwig(track_metadata)
         exp_id = track_metadata[:metadata][:experiment_id]
-        track_metadata.merge({
+        {
           track: exp_id + ".bw",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bw", exp_id + ".bw"),
-        })
+        }.merge(track_metadata)
       end
 
       def track_bigbed(track_metadata, threshold)
         exp_id = track_metadata[:metadata][:experiment_id]
-        track_metadata.merge({
+        {
           track: exp_id + "." + threshold + ".bb",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bb" + threshold, exp_id + "." + threshold + ".bb"),
-        })
+        }.merge(track_metadata)
       end
 
       def track_metadata(line)

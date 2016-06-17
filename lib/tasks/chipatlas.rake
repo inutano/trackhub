@@ -2,6 +2,6 @@ namespace :chipatlas do
   explist = ENV['experiment_list']
 
   task :create do
-    puts TrackHub::ChIPAtlas::Experiments.new(explist).export_json
+    puts TrackHub::ChIPAtlas::Experiments.new(explist).export_trackfile
   end
 end

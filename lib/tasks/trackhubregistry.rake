@@ -86,6 +86,8 @@ namespace :registry do
   username = ENV['username']
   userpass = ENV['userpass']
   hub_url  = ENV['hub_url']
+
+  desc "Request authentication token"
   task :regist do
     TrackHub::Client.new(username, userpass).regist(hub_url)
   end

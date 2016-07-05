@@ -9,6 +9,7 @@ namespace :chipatlas do
   file_hub = File.join(metadata_dir, "hub.txt")
   file_genome = File.join(metadata_dir, "genomes.txt")
 
+  desc "Create Track Hub metadata for each tracks of ChIP-Atlas and ship it"
   task :publish => [
     :create,
     :upload,

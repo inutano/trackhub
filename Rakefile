@@ -22,6 +22,6 @@ end
 namespace :trackhub do
   desc "Create Track Hub metadata for each tracks of ChIP-Atlas"
   task :chipatlas do
-    Rake::Task["chipatlas:create"].invoke
+    Rake::Task["chipatlas:publish"].invoke
   end
 end

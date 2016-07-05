@@ -9,6 +9,11 @@ namespace :chipatlas do
   file_hub = File.join(metadata_dir, "hub.txt")
   file_genome = File.join(metadata_dir, "genomes.txt")
 
+  task :publish => [
+    :create,
+    :upload,
+  ]
+
   task :create => [
     file_hub,
     file_genome,
@@ -65,5 +70,12 @@ namespace :chipatlas do
         f.puts(TrackHub::ChIPAtlas::Track.export(explist, ga))
       end
     end
+  end
+
+  task :upload do
+    server = ENV['server'] || "web05"
+    remote_dir = ENV['remote_dir'] || 'public_html/trackhub/chip-atlas'
+    `ssh #{server} mkdir -p #{remote_dir}`
+    `rsync -avr #{metadata_dir}/ #{server}:#{remote_dir}`
   end
 end

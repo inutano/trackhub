@@ -27,41 +27,6 @@ namespace :chipatlas do
     open(t.to_s, 'w'){|f| f.puts(cont.map{|k,v| k.to_s + "\s" + v }) }
   end
 
-  file file_genome do |t|
-    cont = [
-      {
-        genome: "hg19",
-        trackDb: "trackDb_hg19.txt",
-      },
-      {
-        genome: "mm9",
-        trackDb: "trackDb_mm9.txt",
-      },
-      {
-        genome: "ce10",
-        trackDb: "trackDb_ce10.txt",
-      },
-      {
-        genome: "dm3",
-        trackDb: "trackDb_dm3.txt",
-      },
-      {
-        genome: "sacCer3",
-        trackDb: "trackDb_sacCer3.txt",
-      },
-    ]
-    open(t.to_s, 'w') do |file|
-      file.puts(
-        cont.map do |g|
-          genome = g.map do |k,v|
-            k.to_s + "\s" + v
-          end
-          genome.join("\n") + "\n"
-        end
-      )
-    end
-  end
-
   genome_assemblies = [
     "hg19",
     "mm9",
@@ -69,6 +34,18 @@ namespace :chipatlas do
     "dm3",
     "sacCer3"
   ]
+
+  file file_genome do |t|
+    open(t.to_s, 'w') do |file|
+      gt = genome_assemblies.map do |g|
+        [
+          "genome #{g}",
+          "trackDb trackDB_#{g}.txt"
+        ]
+      end
+      file.puts(gt.join("\n")+"\n")
+    end
+  end
 
   def trackdb_file(metadata_dir, ga)
     File.join(metadata_dir, "trackDb_#{ga}.txt")

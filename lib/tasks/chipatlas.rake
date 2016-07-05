@@ -4,6 +4,8 @@ namespace :chipatlas do
   explist = ENV['experiment_list']
   metadata_dir = ENV['metadata_dir'] || File.join(PROJ_ROOT, "metadata")
 
+  directory metadata_dir
+
   file_hub = File.join(metadata_dir, "hub.txt")
   file_genome = File.join(metadata_dir, "genomes.txt")
 

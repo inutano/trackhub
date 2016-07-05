@@ -21,7 +21,7 @@ module TrackHub
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
       request = Net::HTTP::Get.new(path)
-      request.basic_auth(username, userpass)
+      request.basic_auth(@username, @userpass)
       response = http.request(request)
 
       if response.code != "200"
@@ -89,6 +89,6 @@ namespace :registry do
 
   desc "Request authentication token"
   task :regist do
-    TrackHub::Client.new(username, userpass).regist(hub_url)
+    TrackHub::Client.new(username, userpass).register(hub_url)
   end
 end

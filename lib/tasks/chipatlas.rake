@@ -15,7 +15,7 @@ namespace :chipatlas do
     :tracks
   ]
 
-  file file_hub do |t|
+  file file_hub => metadata_dir do |t|
     cont = {
       hub: "ChIP-Atlas",
       shortLabel: "ChIP-Atlas",
@@ -35,30 +35,32 @@ namespace :chipatlas do
     "sacCer3"
   ]
 
-  file file_genome do |t|
+  def trackdb_filename(ga)
+    "trackDb_#{ga}.txt"
+  end
+
+  def trackdb_filepath(metadata_dir, ga)
+    File.join(metadata_dir, ga, trackdb_filename(ga))
+  end
+
+  file file_genome => metadata_dir do |t|
     open(t.to_s, 'w') do |file|
-      gt = genome_assemblies.map do |g|
+      gt = genome_assemblies.map do |ga|
         [
-          "genome #{g}",
-          "trackDb trackDB_#{g}.txt"
+          "genome #{ga}",
+          "trackDb #{ga}/#{trackdb_filename(ga)}\n",
         ]
       end
-      file.puts(gt.join("\n")+"\n")
+      file.puts(gt.join("\n"))
     end
   end
 
-  def trackdb_file(metadata_dir, ga)
-    File.join(metadata_dir, "trackDb_#{ga}.txt")
-  end
-
-  trackdb_files = genome_assemblies.map do |ga|
-    trackdb_file(metadata_dir, ga)
-  end
-
-  task :tracks => trackdb_files
+  task :tracks => genome_assemblies.map{|ga| trackdb_filepath(metadata_dir, ga) }
 
   genome_assemblies.each do |ga|
-    file trackdb_file(metadata_dir, ga) do |t|
+    genome_dir = File.join(metadata_dir, ga)
+    directory genome_dir
+    file trackdb_filepath(metadata_dir, ga) => genome_dir do |t|
       open(t.to_s, "w") do |f|
         f.puts(TrackHub::ChIPAtlas::Track.export(explist, ga))
       end

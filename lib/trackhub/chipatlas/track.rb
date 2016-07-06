@@ -93,7 +93,7 @@ module TrackHub
           track: @exp_id + ".bw",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bw", @exp_id + ".bw"),
-          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bw"].join(","),
+          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bigWig"].join(",") + " on",
         }.merge(@metadata)
       end
 
@@ -102,7 +102,7 @@ module TrackHub
           track: @exp_id + "." + threshold + ".bb",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bb" + threshold, @exp_id + "." + threshold + ".bb"),
-          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bb"].join(","),
+          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bigBed"].join(",") + " on",
         }.merge(@metadata)
       end
 

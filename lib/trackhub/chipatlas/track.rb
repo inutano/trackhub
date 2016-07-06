@@ -67,7 +67,7 @@ module TrackHub
             track_line = track.map do |key, value|
               if value.class == Hash
                 val = value.map do |k,v|
-                  k.to_s.upcase + "=" + v.gsub(/\s/,"_") if v
+                  k.to_s.upcase + "=" + '"' + v + '"' if v
                 end
                 key.to_s + "\s" + val.join("\s")
               else

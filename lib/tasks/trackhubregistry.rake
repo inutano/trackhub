@@ -52,7 +52,7 @@ module TrackHub
       {
         'hg19' => 'GCA_000001405.1',
         'mm9' => 'GCA_000001635.1',
-        'dm3' => '',
+        'dm3' => 'GCA_000001215.2',
         'ce10' => 'GCA_000002985.2',
         'sacCer3' => 'GCA_000146045.2',
       }
@@ -66,7 +66,7 @@ module TrackHub
       self.login
 
       request = Net::HTTP::Post.new('/api/trackhub', { 'Content-Type' => 'application/json', 'User' => @username, 'Auth-Token' => @auth_token })
-      request.body = { 'url' => hub_url, 'assemblies' => genome_assemblies }.to_json
+      request.body = { 'url' => hub_url, 'type' => 'epigenomics' }.to_json
 
       # make a request and register, catch response
       response = $http.request(request)

@@ -100,7 +100,7 @@ module TrackHub
       def bigbed(threshold)
         {
           track: @exp_id + "." + threshold + ".bb",
-          type: "bigWig",
+          type: "bigBed",
           bigDataUrl: File.join(dbarchive_base_url, "bb" + threshold, @exp_id + "." + threshold + ".bb"),
           parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bigBed"].join(",") + " on",
         }.merge(@metadata)

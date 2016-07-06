@@ -6,6 +6,43 @@ module TrackHub
   class ChIPAtlas
     class Track
       class << self
+        def supertrack
+          st = ["bigBed", "bigWig"].map do |type|
+            [
+              "track ChIP-Atlas,#{type}",
+              "shortLabel ChIP-Atlas,#{type}",
+              "longLabel ChIP-Atlas,#{type}",
+              "superTrack on",
+            ].join("\n")
+          end
+          st.join("\n\n")
+        end
+
+        def parents(filepath, genome)
+          ac_raw = `awk -F '\t' '$2 == "#{genome}" { print $3 "\t" $5 }' #{filepath} | sort -u`
+          parents = ac_raw.split("\n").map do |a_c|
+            ac = a_c.split("\t")
+            a = ac[0].gsub(/\s/,"_")
+            c = ac[1].gsub(/\s/,"_")
+            ps = ["bigBed", "bigWig"].map do |type|
+              name = "#{a},#{c},#{type}"
+              [
+                "track #{name}",
+                "shortLabel #{name}",
+                "longLabel #{name}",
+                "compositeTrack on",
+                "allButtonPair on",
+                "type #{type}",
+                "autoScale on",
+                "maxHeightPixel 100:16:8",
+                "parent ChIP-Atlas,#{type}",
+              ].join("\n")
+            end
+            ps.join("\n\n")
+          end
+          parents.join("\n\n")
+        end
+
         def read_table(filepath, genome)
           tracks = open(filepath).readlines.map do |line|
             track = self.new(line)
@@ -39,7 +76,7 @@ module TrackHub
             end
             track_line.join("\n")
           end
-          track_lines.join("\n\n")
+          [supertrack, parents(filepath, genome), track_lines.join("\n\n")].join("\n\n")
         end
       end
 
@@ -56,6 +93,7 @@ module TrackHub
           track: @exp_id + ".bw",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bw", @exp_id + ".bw"),
+          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bw"].join(","),
         }.merge(@metadata)
       end
 
@@ -64,6 +102,7 @@ module TrackHub
           track: @exp_id + "." + threshold + ".bb",
           type: "bigWig",
           bigDataUrl: File.join(dbarchive_base_url, "bb" + threshold, @exp_id + "." + threshold + ".bb"),
+          parent: [@items[2].gsub(/\s/,"_"),@items[4].gsub(/\s/,"_"),"bb"].join(","),
         }.merge(@metadata)
       end
 

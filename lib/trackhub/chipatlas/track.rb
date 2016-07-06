@@ -107,10 +107,10 @@ module TrackHub
       end
 
       def metadata
-        ctd = cell_type_desc
         pl = processing_logs
+        ctd = cell_type_desc
         sm = submitted_metadata
-        {
+        md = {
           shortLabel: @items[0],
           longLabel:  @items[8],
           metadata: {
@@ -120,28 +120,30 @@ module TrackHub
             antigen:         @items[3],
             cell_type_class: @items[4],
             cell_type:       @items[5],
-            primary_tissue:   ctd[:primary_tissue],
-            tissue_diagnosis: ctd[:tissue_diagnosis],
             number_of_reads:    pl[:number_of_reads],
             percent_mapped:     pl[:percent_mapped],
             percent_duplicated: pl[:percent_duplicated],
             number_of_peaks:    pl[:number_of_peaks],
-            source_name:   sm["source_name"],
-            cell_line:     sm["cell line"],
-            chip_antibody: sm["chip antibody"],
-            antibody_catalog_number: sm["antibody catalog number"],
           },
           visibility: "dense",
           url: File.join(chipatlas_base_url, "view?id=" + @items[0]),
         }
+        [ctd, sm].each do |md_hash|
+          md_hash.each_pair do |k,v|
+            md[:metadata][k] = v
+          end
+        end
+        md
       end
 
       def cell_type_desc
         ctd = @items[6].split("|")
-        {
-          primary_tissue: ctd[0],
-          tissue_diagnosis: ctd[1],
-        }
+        h = {}
+        ctd.each do |k_v|
+          kv = k_v.split("=")
+          h[kv[0].gsub(/\s/,"_").downcase.to_sym] = kv[1]
+        end
+        h
       end
 
       def processing_logs
@@ -158,7 +160,7 @@ module TrackHub
         h = {}
         @items[9..@items.size-1].each do |key_value|
           kv = key_value.split("=")
-          h[kv[0]] = kv[1]
+          h[kv[0].gsub(/\s/,"_").downcase.to_sym] = kv[1]
         end
         h
       end

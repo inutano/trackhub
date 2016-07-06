@@ -27,7 +27,7 @@ module TrackHub
       if response.code != "200"
         puts "Invalid response: #{response.code}"
         puts response.body
-        exit
+        exit 1
       end
 
       result = JSON.parse(response.body)
@@ -42,7 +42,7 @@ module TrackHub
       if response.code != "200"
         puts "Invalid response: #{response.code}"
         puts response.body
-        exit
+        exit 1
       end
 
       puts 'Logged out'

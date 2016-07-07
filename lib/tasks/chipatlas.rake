@@ -2,6 +2,7 @@ require 'fileutils'
 
 namespace :chipatlas do
   explist = ENV['experiment_list']
+  bigfile_list = ENV['bigfile_list']
   metadata_dir = ENV['metadata_dir'] || File.join(PROJ_ROOT, "metadata")
 
   directory metadata_dir
@@ -68,7 +69,7 @@ namespace :chipatlas do
     directory genome_dir
     file trackdb_filepath(metadata_dir, ga) => genome_dir do |t|
       open(t.to_s, "w") do |f|
-        f.puts(TrackHub::ChIPAtlas::Track.export(explist, ga))
+        f.puts(TrackHub::ChIPAtlas::Track.export(explist, ga, bigfile_list))
       end
     end
   end

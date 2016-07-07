@@ -61,9 +61,12 @@ module TrackHub
           JSON.dump(read_table(filepath, genome))
         end
 
-        def export(filepath, genome)
+        def export(filepath, genome, bigfile_list)
           tracks = read_table(filepath, genome)
+          bigfiles = open(bigfile_list).readlines.map{|fname| fname.chomp }
           track_lines = tracks.map do |track|
+            # skip if data not available
+            next if !bigfiles.include?(track[:track])
             track_line = track.map do |key, value|
               if value.class == Hash
                 val = value.map do |k,v|
@@ -76,7 +79,7 @@ module TrackHub
             end
             track_line.join("\n")
           end
-          [supertrack, parents(filepath, genome), track_lines.join("\n\n")].join("\n\n")
+          [supertrack, parents(filepath, genome), track_lines.compact.join("\n\n")].join("\n\n")
         end
       end
 
